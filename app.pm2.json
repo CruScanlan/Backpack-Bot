@@ -1,0 +1,17 @@
+{
+  "apps": [
+    {
+      "name": "backpackbot",
+      "script": "app.js",
+      "node_args": "--harmony",
+      "watch": true,
+      "ignore_watch": ['data'],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "env_production": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}

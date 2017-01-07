@@ -1,0 +1,23 @@
+{
+  "prefix": "!",
+  "ownerID":  "",
+  "logTimeZone": "Australia/Brisbane",
+  "TimeFormat": "D-M-YYYY  H:m:s",
+  "tokens": {
+    "token": "",
+    "backpackapi": "",
+    "steamtoken": ""
+  },
+  "message": {
+    "deleteTime": 8
+  },
+  "data": {
+    "DataUpdateTime": 600000
+  },
+  "mysql":  {
+    "host": "localhost",
+    "user": "",
+    "password": "",
+    "database": "BackpackBot"
+  }
+}
