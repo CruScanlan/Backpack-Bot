@@ -15,7 +15,7 @@ let DBConnect = function()  {
 };
 
 let DBUpdateGuilds = async function(client) {
-    let guildData = client.guilds.map(r => r.id + '#' + r.name + '#' + r.owner.user.username + '#' + r.owner.id + '#' + r.memberCount + '#' + r.region + '#' + r.joinedAt).join('~').split('~'); //get guild data for all joined guilds
+    let guildData = client.guilds.map(r => r.id + '#' + r.name + '#' + r.owner.user.username + '#' + r.owner.id + '#' + r.memberCount + '#' + r.region + '#' + r.joinedAt); //get guild data for all joined guilds
     for (let i = 0; i < guildData.length; i++) {
         let guildDataItems = guildData[i].split('#');
         let sql = "SELECT * FROM ??.`Guilds` WHERE ??.`Guilds`.`guildID` = ?;";

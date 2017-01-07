@@ -6,6 +6,7 @@ const path = require('path');
 const logging = require('./functions/util/logging');
 const DB = require('./functions/db/db');
 const dataUpdate = require('./functions/util/dataUpdate');
+const simple = require('./functions/util/simple');
 
 //Require Files
 const config = require('./config.json');
@@ -30,12 +31,20 @@ client.registry
     .registerDefaults()
 
     // Registers all of your commands in the ./commands/ directory
-    .registerCommandsIn(path.join(__dirname, 'commands'));
+    .registerCommandsIn(path.join(__dirname, 'commands'))
+
+    .registerEvalObjects({
+        biggestGuild:   function()  {
+            return Math.max(...client.guilds.map(r => r.memberCount));
+        }
+    });
 
 //Events
 client.on('ready', () => {
         logging.logTime(`Client ready... Logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
         DB.DBConnect();
+
+        simple.setGame(client);
 
         setTimeout(function () {
             DB.DBUpdateGuilds(client);
@@ -44,12 +53,14 @@ client.on('ready', () => {
         setInterval(function(){//update data
             dataUpdate.updatePriceData();
             dataUpdate.updateItemSchema();
+            simple.setGame(client);
         }, 1000*config.data.DataUpdateTime+10);
     })
     .on("guildCreate", guild => {
         logging.logTime(`New guild added : ${guild.name}, owned by ${guild.owner.user.username}`);
         let guildDataItems = (guild.id + '#' + guild.name + '#' + client.users.get(guild.ownerID).username + '#' + guild.ownerID + '#' + guild.memberCount + '#' + guild.region + '#' + guild.joinedAt).split('#');
         DB.DBAddGuild(guildDataItems);
+        simple.setGame(client);
     })
     .on("guildMemberAdd", guildMember => {
         DB.DBUpdateGuild(guildMember,client);
@@ -61,6 +72,7 @@ client.on('ready', () => {
     .on("guildDelete", guild => {
         logging.logTime(`Guild Left : ${guild.name}, owned by ${guild.owner.user.username}`);
         DB.DBDeleteGuild(guild.id);
+        simple.setGame(client);
     })
     .on("guildMemberUpdate", (oldMember, newMember) => {
         if (newMember.user.id != newMember.guild.ownerID) return;
