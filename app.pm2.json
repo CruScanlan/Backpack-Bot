@@ -2,10 +2,23 @@
   "apps": [
     {
       "name": "backpackbot",
-      "script": "app.js",
+      "script": "bot.js",
       "node_args": "--harmony",
       "watch": true,
-      "ignore_watch": ['data','node_modules'],
+      "ignore_watch": ['api/data','node_modules'],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "env_production": {
+        "NODE_ENV": "production"
+      }
+    },
+    {
+      "name": "backpackbotapi",
+      "script": "api.js",
+      "node_args": "--harmony",
+      "watch": true,
+      "ignore_watch": ['api/data','node_modules'],
       "env": {
         "NODE_ENV": "development"
       },
