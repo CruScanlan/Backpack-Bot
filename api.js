@@ -63,7 +63,7 @@ app.get('/api/stats/', upload.array(), function(req, res) {
     })
 });
 
-app.listen(3000);
+app.listen(3434);
 console.log(`API Running`);
 
 setInterval(function(){//update data
