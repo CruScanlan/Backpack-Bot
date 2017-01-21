@@ -73,7 +73,7 @@ module.exports = class TFUnusualPriceCheckCommand extends Command {
                                 difference = "▼ "
                             ]
                         }
-                        embed.addField(`${bodyparsed.data[i].tradetype} - ${bodyparsed.data[i].crafttype} - ${bodyparsed.data[i].qualitytype}`,`${difference}${bodyparsed.data[i].value.value} ${bodyparsed.data[i].value.valuecurrency}`)
+                        embed.addField(`${bodyparsed.data[i].tradetype} - ${bodyparsed.data[i].crafttype} - ${bodyparsed.data[i].qualitytype}`,`${difference}${bodyparsed.data[i].value.value} ${bodyparsed.data[i].value.valuecurrency} - [Link](http://backpack.tf/stats/${bodyparsed.data[i].qualitytype}/${bodyparsed.item.split(" ").join("%20")}/${bodyparsed.data[i].tradetype}/${bodyparsed.data[i].crafttype}/${bodyparsed.effectid})`)
                     }
                     DB.DBChangeData(msg.guild.id,{"DataUPCQuery":1});
                     return msg.channel.sendEmbed(embed);

@@ -53,9 +53,7 @@ client.on('ready', () => {
 
         other.setGame(client);
 
-        setTimeout(function () {
-            DB.DBUpdateGuilds(client);
-        }, 4000);
+        DB.DBUpdateGuilds(client);
 
         setInterval(function(){//update data
             other.setGame(client);

@@ -140,7 +140,7 @@ module.exports = {
         if(priceItemData == undefined)  return callback({errcode:308,errmsg:errcodes.unusualcheck.code308,extra:{item:priceNameFinal,effect:effectNameFinal}},null);
 
         let itemdata = [];
-        let effectID = "";
+        let effectID = 0;
         for(let i=0; i< Object.keys(priceItemData).length; i++) {
             let tempItemTypeTrade = priceItemData[Object.keys(priceItemData)[i]];
             for (let p = 0; p < Object.keys(tempItemTypeTrade).length; p++) {
@@ -184,11 +184,11 @@ module.exports = {
                 cloudinary.uploader.upload(`https://backpack.tf/images/440/particles/${effectID}_94x94.png`, function(result) {
                     let image = cloudinary.image(`particle_${effectID}_128x128`, { overlay: `base_${baseImageID}_128x128`, gravity: 'center'});
                     let finalImage = image.substring(image.search("http://res"),image.search("/>")-2);
-                    return callback(null,{response:{success:true,item:priceNameFinal,effect:effectNameFinal,itemurl:finalImage,data:itemdata}});
+                    return callback(null,{response:{success:true,item:priceNameFinal,effect:effectNameFinal,effectid:effectID,itemurl:finalImage,data:itemdata}});
                 },{ public_id: `particle_${effectID}_128x128`, width: 128, height: 128 });
             },{ public_id: `base_${baseImageID}_128x128`, width: 128, height: 128 });
         }   else    {
-            return callback(null,{response:{success:true,item:priceNameFinal,effect:effectNameFinal,data:itemdata}});
+            return callback(null,{response:{success:true,item:priceNameFinal,effect:effectNameFinal,effectid:effectID,data:itemdata}});
         }
 
     },//END UNUSUAL PRICE CHECK

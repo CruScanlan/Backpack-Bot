@@ -15,42 +15,55 @@ let DBConnect = function()  {
 };
 
 let DBUpdateGuilds = function(client) {
-    let guildData = client.guilds.map(r => r.id + '#' + r.name + '#' + r.owner.user.username + '#' + r.owner.id + '#' + r.memberCount + '#' + r.region + '#' + r.joinedAt); //get guild data for all joined guilds
-    for (let i = 0; i < guildData.length; i++) {
-        let guildDataItems = guildData[i].split('#');
-        let sql = "SELECT * FROM ??.`Guilds` WHERE ??.`Guilds`.`guildID` = ?;";
-        let inserts = [config.mysql.database,config.mysql.database,guildDataItems[0]];
+    let guildData = client.guilds.array();
+    for(let i=0;i<guildData.length; i++)    {
+        r = guildData[i];
+        if(r.owner) {
+            guildData[i] = r.id + '#' + r.name + '#' + r.owner.user.username + '#' + r.ownerID + '#' + r.memberCount + '#' + r.region + '#' + r.joinedAt;
+        }   else    {
+            client.fetchUser(r.ownerID).then(owner => {
+                guildData[i] = r.id + '#' + r.name + '#' + owner.username + '#' + r.ownerID + '#' + r.memberCount + '#' + r.region + '#' + r.joinedAt;
+            });
+        }
+    }
+
+    setTimeout(function () {
+        for (let i = 0; i < guildData.length; i++) {
+            let guildDataItems = guildData[i].split('#');
+            let sql = "SELECT * FROM ??.`Guilds` WHERE ??.`Guilds`.`guildID` = ?;";
+            let inserts = [config.mysql.database,config.mysql.database,guildDataItems[0]];
+            sql = mysql.format(sql, inserts);
+            mysqlConnection.query(sql,function(err, rows) {
+                if (err) throw err;
+                if (rows[0] == undefined) {
+                    DBAddGuild(guildDataItems);
+                } else {
+                    let tempItemKeys = Object.keys(rows[0]);
+                    for (let i = 0; i < guildDataItems.length; i++) {
+                        if (guildDataItems[i] != rows[0][tempItemKeys[i+1]]) {
+                            DBUpdateGuildGuild(guildDataItems);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+        let sql = "SELECT * FROM ??.`Guilds`;";
+        let inserts = [config.mysql.database];
         sql = mysql.format(sql, inserts);
         mysqlConnection.query(sql,function(err, rows) {
             if (err) throw err;
-            if (rows[0] == undefined) {
-                DBAddGuild(guildDataItems);
-            } else {
-                let tempItemKeys = Object.keys(rows[0]);
-                for (let i = 0; i < guildDataItems.length; i++) {
-                    if (guildDataItems[i] != rows[0][tempItemKeys[i+1]]) {
-                        DBUpdateGuildGuild(guildDataItems);
-                        break;
-                    }
+            for (let i = 0; i < rows.length; i++) {
+                let p=0;
+                for (p = 0; p < guildData.length; p++) {
+                    let guildDataItems = guildData[p].split('#');
+                    if(rows[i].guildID == guildDataItems[0]) break;
                 }
+                if(p < guildData.length) continue;
+                DBDeleteGuild(rows[i].guildID);
             }
         });
-    }
-    let sql = "SELECT * FROM ??.`Guilds`;";
-    let inserts = [config.mysql.database];
-    sql = mysql.format(sql, inserts);
-    mysqlConnection.query(sql,function(err, rows) {
-        if (err) throw err;
-        for (let i = 0; i < rows.length; i++) {
-            let p=0;
-            for (p = 0; p < guildData.length; p++) {
-                let guildDataItems = guildData[p].split('#');
-                if(rows[i].guildID == guildDataItems[0]) break;
-            }
-            if(p < guildData.length) continue;
-            DBDeleteGuild(rows[i].guildID);
-        }
-    });
+    }, 4000);
 };
 
 let DBUpdateGuild = function(guildMember,client)   {

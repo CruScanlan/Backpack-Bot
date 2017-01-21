@@ -43,7 +43,6 @@ module.exports = class TFPriceCheckCommand extends Command {
             }, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     let bodyparsed = body.response;
-                    console.log(bodyparsed);
                     if (bodyparsed.success != 1) {
                         if (bodyparsed.error.errorcode == 101)   return msg.reply(`Please Supply An Item To Price Check`);
                         if (bodyparsed.error.errorcode == 106)   return msg.reply(`Item Not Found :slight_frown:\nTry Removing Any Quality Names Or The Word 'The'`);
@@ -51,8 +50,8 @@ module.exports = class TFPriceCheckCommand extends Command {
                     }
 
                     let embed = new RichEmbed();
-                    embed.setTitle(bodyparsed.item);
-                    embed.setDescription("This Is The Current Price(s) For '"+bodyparsed.item+"'");
+                    embed.setTitle(`${bodyparsed.item}`);
+                    embed.setDescription(`This Is The Current Price(s) For ${bodyparsed.item}`);
                     embed.setColor(675276); //set colour to blue
                     embed.setImage(bodyparsed.itemurl);
                     embed.setFooter('Made by Cruzercru (http://bit.do/cruzercru , Cruzercru#8940) - Using backpack.tf Data', 'http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/61/612bfff5e84f0e610e72b424c9fb06a7e72f3914_full.jpg');
@@ -66,7 +65,7 @@ module.exports = class TFPriceCheckCommand extends Command {
                                 difference = "▼ "
                             ]
                         }
-                        embed.addField(`${bodyparsed.data[i].tradetype} - ${bodyparsed.data[i].crafttype} - ${bodyparsed.data[i].qualitytype}`,`${difference}${bodyparsed.data[i].value.value} ${bodyparsed.data[i].value.valuecurrency}`)
+                        embed.addField(`${bodyparsed.data[i].tradetype} - ${bodyparsed.data[i].crafttype} - ${bodyparsed.data[i].qualitytype}`,`${difference}${bodyparsed.data[i].value.value} ${bodyparsed.data[i].value.valuecurrency} - [Link](http://backpack.tf/stats/${bodyparsed.data[i].qualitytype}/${bodyparsed.item.split(" ").join("%20")}/${bodyparsed.data[i].tradetype}/${bodyparsed.data[i].crafttype}/0)`)
                     }
 
                     DB.DBChangeData(msg.guild.id,{"DataPCQuery":1});
