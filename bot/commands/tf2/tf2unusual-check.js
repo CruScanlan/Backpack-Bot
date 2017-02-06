@@ -1,7 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { RichEmbed } = require('discord.js');
 const request = require('request');
-const config = require('../../../config.json');
 const DB = require('../../functions/db/db');
 
 module.exports = class TFUnusualPriceCheckCommand extends Command {
@@ -34,7 +33,7 @@ module.exports = class TFUnusualPriceCheckCommand extends Command {
             if(!userItemName) return msg.reply(`Please Supply An Item Name To Price Check,\nExample: ${msg.client.commandPrefix}tfupc Aces High ; Hat Of Cards`);
 
             request.post({
-                url: 'http://localhost:3000/api/unusualPriceCheck',
+                url: 'http://localhost:3000/api/tf2/unusualPriceCheck',
                 json: true,
                 body: {
                     "name":	userItemName,
@@ -58,11 +57,10 @@ module.exports = class TFUnusualPriceCheckCommand extends Command {
 
 
                     let embed = new RichEmbed();
-                    embed.setTitle(`${bodyparsed.effect} ${bodyparsed.item}`);
+                    embed.setTitle(`Unusual Price Check - ${bodyparsed.effect} ${bodyparsed.item}`);
                     embed.setDescription(`This Is The Price For The '${bodyparsed.effect} ${bodyparsed.item}',`);
                     embed.setColor(675276); //set colour to blue
                     embed.setImage(bodyparsed.itemurl);
-                    embed.setFooter('Made by Cruzercru (http://bit.do/cruzercru , Cruzercru#8940) - Using backpack.tf Data', 'http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/61/612bfff5e84f0e610e72b424c9fb06a7e72f3914_full.jpg');
 
                     for(let i=0; i<bodyparsed.data.length; i++) {
                         let difference = "";

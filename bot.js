@@ -22,7 +22,8 @@ client.registry
     .registerGroups([
         ['general', 'General'],
         ['tf2', 'Team Fortress 2'],
-        ['info', 'Info'],
+        ['opskins', 'OP Skins'],
+        ['stn', 'stn.tf'],
         ['serverowner', 'Server Owner Only']
     ])
 
@@ -52,18 +53,21 @@ client.on('ready', () => {
         DB.DBConnect();
 
         other.setGame(client);
+        other.discordpw(client);
+        //other.discordlist(client);
 
         DB.DBUpdateGuilds(client);
 
         setInterval(function(){//update data
             other.setGame(client);
+            other.discordpw(client);
         }, config.data.DataUpdateTime);
     })
     .on("guildCreate", guild => {
         logging.logTime(`New guild added : ${guild.name}, owned by ${guild.owner.user.username}`);
         let guildDataItems = (guild.id + '#' + guild.name + '#' + client.users.get(guild.ownerID).username + '#' + guild.ownerID + '#' + guild.memberCount + '#' + guild.region + '#' + guild.joinedAt).split('#');
         DB.DBAddGuild(guildDataItems);
-        simple.setGame(client);
+        other.setGame(client);
     })
     .on("guildMemberAdd", guildMember => {
         DB.DBUpdateGuild(guildMember,client);
@@ -75,7 +79,7 @@ client.on('ready', () => {
     .on("guildDelete", guild => {
         logging.logTime(`Guild Left : ${guild.name}, owned by ${guild.owner.user.username}`);
         DB.DBDeleteGuild(guild.id);
-        simple.setGame(client);
+        other.setGame(client);
     })
     .on("guildMemberUpdate", (oldMember, newMember) => {
         if (newMember.user.id != newMember.guild.ownerID) return;

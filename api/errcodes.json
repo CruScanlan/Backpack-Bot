@@ -1,5 +1,5 @@
 {
-  "itemcheck":  {
+  "tf2itemcheck":  {
     "code101": "no Item Name",
     "code102": "no options",
     "code103": "allqualities not specified",
@@ -11,10 +11,10 @@
     "code109": "there is no Craftable and Tradable version of this item",
     "code110": "there is no version of this item in the specified quality"
   },
-  "currencycheck":  {
+  "tf2currencycheck":  {
     "code201":  "could not get currency data"
   },
-  "unusualcheck": {
+  "tf2unusualcheck": {
     "code301":  "no item name",
     "code302":  "no effect name",
     "code303":  "imageurl is undefined",
@@ -23,5 +23,9 @@
     "code306":  "no effects match the search phrase",
     "code307":  "the effect the searched for does not exist on the item searched for",
     "code308":  "the item searched for does not have an unusual version"
+  },
+  "opcsitemcheck":  {
+    "code401": "no item name",
+    "code402": "no items match the search phrase"
   }
 }

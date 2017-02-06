@@ -1,22 +1,21 @@
 const fs = require('fs');
 const bs = require('binarysearch');
-const cloudinary = require('cloudinary');
+const didyoumean = require('didyoumean');
 const config = require('../config.json');
 const errcodes = require("./errcodes");
+const imageHandling = require('./imageHandling');
 
 getLocalData();
 setInterval(function(){
     getLocalData();
-}, config.data.DataUpdateTime+10);
-
-cloudinary.config(config.cloudinary);
+}, config.data.DataUpdateTime+10000);
 
 module.exports = {
-    itemCheck: function(name,quality,options,callback)  { //ITEM CHECKING
+    tf2itemCheck: function(name,quality,options,callback)  { //ITEM CHECKING
         let data = [];
-        let priceNameMatches = getPriceNameMatches(name);
-        if(priceNameMatches.length<1)   return callback({errcode:106,errmsg:errcodes.itemcheck.code106},null);
-        let priceNameFinal = priceNameMatches[bs.closest(priceNameMatches.join("~").toLowerCase().split("~"),name.trim().toLowerCase())];
+        let priceNameMatches = getPriceNameMatches(name.trim().replace( /  +/g, ' ' ));
+        if(priceNameMatches.length<1)   return callback({errcode:106,errmsg:errcodes.tf2itemcheck.code106},null);
+        let priceNameFinal = priceNameMatches[bs.closest(priceNameMatches.join("~").toLowerCase().split("~"),name.trim().toLowerCase().replace( /  +/g, ' ' ))];
         let imageURL = getImageURL(priceNameFinal);
 
         if(options.allqualities == true) {
@@ -42,6 +41,7 @@ module.exports = {
                             data.push({tradetype:tempItemTypeTrade[p],
                                 crafttype:tempItemTypeCraft[q],
                                 qualitytype:itemQualities[pricesItemQualities[i]],
+                                backpacktflink: `http://backpack.tf/stats/${itemQualities[pricesItemQualities[i]]}/${priceNameFinal.split(" ").join("%20")}/${tempItemTypeTrade[p]}/${tempItemTypeCraft[q]}/0`,
                                 difference:priceChange,
                                 value:{
                                     value:tempItemData.value,
@@ -54,7 +54,7 @@ module.exports = {
             }
             return callback(null,{response:{success:true,item:priceNameFinal,itemurl:imageURL,data}});
         }   else    {
-            if(quality == undefined) return callback({errcode:105,errmsg:errcodes.itemcheck.code105},null);
+            if(quality == undefined) return callback({errcode:105,errmsg:errcodes.tf2itemcheck.code105},null);
             let priceItemData = pricedata[priceNameFinal].prices;
 
             let finalQuality = "";
@@ -62,7 +62,7 @@ module.exports = {
                 finalQuality = "6";
             }   else    {
                 let itemQualitiesSwapped = swap(itemQualities);
-                finalQuality = bs.closest(Object.keys(itemQualitiesSwapped).join("~").toLowerCase().split("~"),quality.trim().toLowerCase());
+                finalQuality = bs.closest(Object.keys(itemQualitiesSwapped).join("~").toLowerCase().split("~"),quality.trim().toLowerCase().replace( /  +/g, ' ' ));
             }
             if(priceItemData[finalQuality] == undefined)    return callback({errcode:110,errmsg:errcodes.code110},null);
 
@@ -86,6 +86,7 @@ module.exports = {
                             tradetype: tempItemTypeTrade[p],
                             crafttype: tempItemTypeCraft[q],
                             qualitytype: itemQualities[finalQuality],
+                            backpacktflink: `http://backpack.tf/stats/${itemQualities[finalQuality]}/${priceNameFinal.split(" ").join("%20")}/${tempItemTypeTrade[p]}/${tempItemTypeCraft[q]}/0`,
                             difference: priceChange,
                             value: {
                                 value:tempItemData.value,
@@ -111,6 +112,7 @@ module.exports = {
                     tradetype: "Tradable",
                     crafttype: "Craftable",
                     qualitytype: itemQualities[finalQuality],
+                    backpacktflink: `http://backpack.tf/stats/${itemQualities[finalQuality]}/${priceNameFinal.split(" ").join("%20")}/Tradable/Craftable/0`,
                     difference: priceChange,
                     value: {
                         value: priceItemData[finalQuality]["Tradable"]["Craftable"][0].value,
@@ -119,25 +121,25 @@ module.exports = {
                 });
             }
         }
-        return callback(null,{response:{success:true,item:priceNameFinal,itemurl:imageURL,itemdata}});
+        return callback(null,{response:{success:true,item:priceNameFinal,itemurl:imageURL,data}});
     },//END ITEM CHECK FUNCTION
-    currencyCheck:  function(callback)  {
-        if(currencydata == undefined)   return callback({errcode:201,errmsg:errcodes.currencycheck.code201},null);
+    tf2currencyCheck:  function(callback)  {
+        if(currencydata == undefined)   return callback({errcode:201,errmsg:errcodes.tf2currencycheck.code201},null);
         return callback(null,{response:{success:true,data:currencydata}});
     },//END CURRENCY CHECK FUNCTION
-    unusualCheck:   function(name,effect,options,callback)  {
-        let priceNameMatches = getPriceNameMatches(name);
-        let effectNameMatches = getEffectNameMatches(effect);
+    tf2unusualCheck:   function(name,effect,options,callback)  {
+        let priceNameMatches = getPriceNameMatches(name.trim().replace( /  +/g, ' ' ));
+        let effectNameMatches = getEffectNameMatches(effect.trim().replace( /  +/g, ' ' ));
 
-        if(priceNameMatches.length<1) return callback({errcode:305,errmsg:errcodes.unusualcheck.code305},null);
-        if(effectNameMatches.length<1) return callback({errcode:306,errmsg:errcodes.unusualcheck.code306},null);
+        if(priceNameMatches.length<1) return callback({errcode:305,errmsg:errcodes.tf2unusualcheck.code305},null);
+        if(effectNameMatches.length<1) return callback({errcode:306,errmsg:errcodes.tf2unusualcheck.code306},null);
 
-        let priceNameFinal = priceNameMatches[bs.closest(priceNameMatches.join("~").toLowerCase().split("~"),name.toLowerCase())];
-        let effectNameFinal = effectNameMatches[bs.closest(effectNameMatches.join("~").toLowerCase().split("~"),effect.toLowerCase())];
+        let priceNameFinal = priceNameMatches[bs.closest(priceNameMatches.join("~").toLowerCase().split("~"),name.toLowerCase().trim().replace( /  +/g, ' ' ))];
+        let effectNameFinal = effectNameMatches[bs.closest(effectNameMatches.join("~").toLowerCase().split("~"),effect.toLowerCase().trim().replace( /  +/g, ' ' ))];
 
         let priceItemData = pricedata[priceNameFinal].prices["5"];
 
-        if(priceItemData == undefined)  return callback({errcode:308,errmsg:errcodes.unusualcheck.code308,extra:{item:priceNameFinal,effect:effectNameFinal}},null);
+        if(priceItemData == undefined)  return callback({errcode:308,errmsg:errcodes.tf2unusualcheck.code308,extra:{item:priceNameFinal,effect:effectNameFinal}},null);
 
         let itemdata = [];
         let effectID = 0;
@@ -146,7 +148,7 @@ module.exports = {
             for (let p = 0; p < Object.keys(tempItemTypeTrade).length; p++) {
                 effectID = effectids[effectnames.indexOf(effectNameFinal)];
                 let itemData = tempItemTypeTrade[Object.keys(tempItemTypeTrade)[p]][effectID];
-                if(itemData == undefined) return callback({errcode:307,errmsg:errcodes.unusualcheck.code307,extra:{item:priceNameFinal,effect:effectNameFinal}},null);
+                if(itemData == undefined) return callback({errcode:307,errmsg:errcodes.tf2unusualcheck.code307,extra:{item:priceNameFinal,effect:effectNameFinal}},null);
                 let changeData = itemData.difference;
                 let priceChange = "";
                 if (changeData == null) {
@@ -160,6 +162,8 @@ module.exports = {
                     tradetype: Object.keys(priceItemData)[i],
                     crafttype: Object.keys(tempItemTypeTrade)[p],
                     qualitytype: "Unusual",
+                    effectid: effectID,
+                    backpacktflink: `http://backpack.tf/stats/Unusual/${priceNameFinal.split(" ").join("%20")}/${Object.keys(priceItemData)[i]}/${Object.keys(tempItemTypeTrade)[p]}/${effectID}`,
                     difference: priceChange,
                     value:  {
                         value: itemData.value,
@@ -180,21 +184,32 @@ module.exports = {
         priceNameMatches = [];
 
         if(options.imageurl == true)    {
-            cloudinary.uploader.upload(baseImage, function(result) {
-                cloudinary.uploader.upload(`https://backpack.tf/images/440/particles/${effectID}_94x94.png`, function(result) {
-                    let image = cloudinary.image(`particle_${effectID}_128x128`, { overlay: `base_${baseImageID}_128x128`, gravity: 'center'});
-                    let finalImage = image.substring(image.search("http://res"),image.search("/>")-2);
-                    return callback(null,{response:{success:true,item:priceNameFinal,effect:effectNameFinal,effectid:effectID,itemurl:finalImage,data:itemdata}});
-                },{ public_id: `particle_${effectID}_128x128`, width: 128, height: 128 });
-            },{ public_id: `base_${baseImageID}_128x128`, width: 128, height: 128 });
+            imageHandling.getUnusualImage(baseImage,baseImageID,effectID,function(imageurl){
+                console.log(imageurl);
+                return callback(null,{response:{success:true,item:priceNameFinal,effect:effectNameFinal,effectid:effectID,itemurl:imageurl,data:itemdata}});
+            });
         }   else    {
             return callback(null,{response:{success:true,item:priceNameFinal,effect:effectNameFinal,effectid:effectID,data:itemdata}});
         }
 
     },//END UNUSUAL PRICE CHECK
     stats:  function(callback) {
-        return callback(null,{response:{success:true,data:{totalitems:Object.keys(pricedata).length}}});
-    }//END STATS
+        return callback(null,{response:{success:true,data:{totaltf2items:Object.keys(pricedata).length}}});
+    },//END STATS
+    opcsItemCheck:  function(name,callback)  {
+        let itemname = didyoumean(name.trim().replace( /  +/g, ' ' ),opcsitemnames);
+        if(itemname == null) return callback({errcode:402,errmsg:errcodes.opcsitemcheck.code402},null);
+
+        let data = {};
+        for(let i=0; i<opcsitemnames.length;i++)    {
+            if(opcsitemdata[i][itemname] != undefined) {
+                data = opcsitemdata[i][itemname];
+                break;
+            }
+        }
+
+        return callback(null,{response:{success:true,item:data.name,itemurl:data.itemurl,data:data.data}});
+    }
 };
 
 function getPriceNameMatches(name)  {
@@ -246,6 +261,16 @@ function getLocalData() {
         let jsonParsed = JSON.parse(data);
         global.itemschemaimages = jsonParsed.items;
         global.itemQualities = jsonParsed.qualities;
+    });
+
+    fs.readFile('./api/data/opskinscsgo.json', 'utf8', (err, data) => {
+        if (err) throw err;
+        let jsonParsed = JSON.parse(data).items;
+        global.opcsitemnames = [];
+        global.opcsitemdata = jsonParsed;
+        for(let i=0; i<opcsitemdata.length;i++) {
+            opcsitemnames.push(Object.keys(opcsitemdata[i])[0])
+        }
     });
 
     fs.readFile('./api/data/tf2itemeffects.json', 'utf8', (err, data) => {

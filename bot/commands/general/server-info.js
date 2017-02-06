@@ -15,8 +15,8 @@ module.exports = class ServerInfoCommand extends Command {
         super(client, {
             name: 'server-info',
             aliases: ['info'],
-            group: 'info',
-            memberName: 'server',
+            group: 'general',
+            memberName: 'server-info',
             description: 'Get info on the server.',
             details: `Get detailed information on the server.`,
             guildOnly: true,
@@ -71,8 +71,7 @@ module.exports = class ServerInfoCommand extends Command {
                         value: `• Emojis: ${msg.guild.emojis.array().join(' ')}`
                     }
                 ],
-                thumbnail: { url: msg.guild.iconURL },
-                footer: {text: 'Made by Cruzercru (http://bit.do/cruzercru , Cruzercru#8940) - Using backpack.tf Data', icon_url: 'http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/61/612bfff5e84f0e610e72b424c9fb06a7e72f3914_full.jpg'}
+                thumbnail: { url: msg.guild.iconURL }
             });
         });
     }

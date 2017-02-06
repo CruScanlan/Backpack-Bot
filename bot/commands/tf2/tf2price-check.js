@@ -1,7 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { RichEmbed } = require('discord.js');
 const request = require('request');
-const config = require('../../../config.json');
 const DB = require('../../functions/db/db');
 
 module.exports = class TFPriceCheckCommand extends Command {
@@ -30,7 +29,7 @@ module.exports = class TFPriceCheckCommand extends Command {
             if(!args) return msg.reply(`Please Supply An Item To Price Check`);
 
             request.post({
-                url: 'http://localhost:3000/api/itemPriceCheck',
+                url: 'http://localhost:3000/api/tf2/itemPriceCheck',
                 json: true,
                 body: {
                     "name": args,
@@ -50,11 +49,10 @@ module.exports = class TFPriceCheckCommand extends Command {
                     }
 
                     let embed = new RichEmbed();
-                    embed.setTitle(`${bodyparsed.item}`);
+                    embed.setTitle(`TF2 Price Check - ${bodyparsed.item}`);
                     embed.setDescription(`This Is The Current Price(s) For ${bodyparsed.item}`);
                     embed.setColor(675276); //set colour to blue
                     embed.setImage(bodyparsed.itemurl);
-                    embed.setFooter('Made by Cruzercru (http://bit.do/cruzercru , Cruzercru#8940) - Using backpack.tf Data', 'http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/61/612bfff5e84f0e610e72b424c9fb06a7e72f3914_full.jpg');
 
                     for(let i=0; i<bodyparsed.data.length; i++) {
                         let difference = "";

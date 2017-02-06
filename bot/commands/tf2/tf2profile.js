@@ -62,7 +62,6 @@ module.exports = class TFProfileCommand extends Command {
                         if(!bodyParsed.response.players[0]) return msg.channel.sendMessage(`ERROR: The URL Provided Is Invalid`);
                         embed.setDescription(`Here Is ${bodyParsed.response.players[0].personaname}'s Profile Details,`);
                         embed.setImage(bodyParsed.response.players[0].avatarmedium);
-                        embed.setFooter('Made by Cruzercru (http://bit.do/cruzercru , Cruzercru#8940) - Using backpack.tf Data', 'http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/61/612bfff5e84f0e610e72b424c9fb06a7e72f3914_full.jpg');
 
                         async.parallel([
                             function(callback) {
@@ -93,7 +92,7 @@ module.exports = class TFProfileCommand extends Command {
                                 })
                             },
                             function(callback) {
-                                request(`http://localhost:3000/api/currencyCheck`, function (error, response, body) {
+                                request(`http://localhost:3000/api/tf2/currencyCheck`, function (error, response, body) {
                                     if (!error && response.statusCode == 200) {
                                         callback(null,JSON.parse(body));
                                         return;

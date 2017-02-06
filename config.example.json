@@ -3,10 +3,13 @@
   "ownerID":  "",
   "logTimeZone": "Australia/Brisbane",
   "TimeFormat": "D-M-YYYY  H:m:s",
+  "ip": "",
   "tokens": {
     "token": "",
     "backpackapi": "",
-    "steamtoken": ""
+    "steamtoken": "",
+    "discordpw":  "",
+    "discordlist": ""
   },
   "message": {
     "deleteTime": 8
@@ -15,14 +18,9 @@
     "DataUpdateTime": 600000
   },
   "mysql":  {
-    "host": "localhost",
+    "host": "",
     "user": "",
     "password": "",
     "database": "BackpackBot"
-  },
-  "cloudinary": {
-    "cloud_name": "",
-    "api_key": "",
-    "api_secret": ""
   }
 }

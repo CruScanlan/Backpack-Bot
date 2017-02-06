@@ -79,8 +79,8 @@ let DBUpdateGuild = function(guildMember,client)   {
 };
 
 let DBAddGuild = function(guildData)    {
-    let sql = "INSERT INTO ??.`Guilds` (`guildID`, `guildName`, `guildOwnerName`, `guildOwnerID`, `guildMemberCount`, `guildRegion`, `guildJoinDate`, `SettingChannel`, `DataPCQuery`, `DataUPCQuery`, `DataCQuery`, `DataPQuery`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?);";
-    let inserts = [config.mysql.database,guildData[0],guildData[1],guildData[2],guildData[3],guildData[4],guildData[5],guildData[6],'none',0,0,0,0];
+    let sql = "INSERT INTO ??.`Guilds` (`guildID`, `guildName`, `guildOwnerName`, `guildOwnerID`, `guildMemberCount`, `guildRegion`, `guildJoinDate`, `SettingChannel`, `DataPCQuery`, `DataUPCQuery`, `DataCQuery`, `DataPQuery`, `DataOPCS-PCQuery`, `DataSTNQuery`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?);";
+    let inserts = [config.mysql.database,guildData[0],guildData[1],guildData[2],guildData[3],guildData[4],guildData[5],guildData[6],'none',0,0,0,0,0,0];
     sql = mysql.format(sql, inserts);
     mysqlConnection.query(sql,function(err) {
         if (err) throw err;

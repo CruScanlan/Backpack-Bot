@@ -1,5 +1,4 @@
 const { Command } = require('discord.js-commando');
-const Discord = require('discord.js');
 const config = require('../../../config.json');
 const DB = require('../../functions/db/db');
 

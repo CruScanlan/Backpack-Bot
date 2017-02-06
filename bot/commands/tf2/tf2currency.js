@@ -25,7 +25,7 @@ module.exports = class TFCurrencyCommand extends Command {
         DB.DBGetSetting(msg.guild.id,"SettingChannel",function(response){
             if(response != 'none' && response != msg.channel.id)  return msg.channel.sendMessage(`This Command Can Only Be Used In ${msg.client.channels.get(response)}`)
                 .then(message => { message.delete(5000) });
-            request('http://localhost:3000/api/currencyCheck',
+            request('http://localhost:3000/api/tf2/currencyCheck',
                 function (error, response, body) {
                     if (!error && response.statusCode == 200 && JSON.parse(body).response.success == 1) {
                         let currencyData = JSON.parse(body).response.data;
@@ -51,7 +51,7 @@ module.exports = class TFCurrencyCommand extends Command {
                         embed.addField(`Hat`,`${priceChange[1]} ${currencyData.hat.price.value} ${currencyData.hat.price.currency}`,true);
                         embed.addField(`Keys`,`${priceChange[2]} ${currencyData.keys.price.value} ${currencyData.keys.price.currency}`,true);
                         embed.addField(`Ear Buds`,`${priceChange[3]} ${currencyData.earbuds.price.value} ${currencyData.earbuds.price.currency}`,true);
-                        embed.setFooter('Made by Cruzercru (http://bit.do/cruzercru , Cruzercru#8940) - Using backpack.tf Data', 'http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/61/612bfff5e84f0e610e72b424c9fb06a7e72f3914_full.jpg');
+                        embed.setFooter('Data from backpack.tf');
                         DB.DBChangeData(msg.guild.id,{"DataCQuery":1});
                         return msg.channel.sendEmbed(embed);
                     } else {
