@@ -1,14 +1,16 @@
 {
   "prefix": "!",
-  "ownerID":  "",
+  "ownerIDs":  [
+    ""
+  ],
   "logTimeZone": "Australia/Brisbane",
   "TimeFormat": "D-M-YYYY  H:m:s",
-  "ip": "",
+  "ip": "localhost",
   "tokens": {
     "token": "",
     "backpackapi": "",
     "steamtoken": "",
-    "discordpw":  "",
+    "discordpw":"",
     "discordlist": ""
   },
   "message": {
@@ -21,6 +23,6 @@
     "host": "",
     "user": "",
     "password": "",
-    "database": "BackpackBot"
+    "database": "BackpackBotDev"
   }
 }

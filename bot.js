@@ -12,7 +12,7 @@ const config = require('./config.json');
 
 //Init Client
 const client = new Commando.Client({
-    owner: config.ownerID,
+    owner: config.ownerIDs,
     commandPrefix: config.prefix,
     invite: 'https://discord.gg/YpUkgnS'
 });
@@ -65,7 +65,7 @@ client.on('ready', () => {
     })
     .on("guildCreate", guild => {
         logging.logTime(`New guild added : ${guild.name}, owned by ${guild.owner.user.username}`);
-        let guildDataItems = (guild.id + '#' + guild.name + '#' + client.users.get(guild.ownerID).username + '#' + guild.ownerID + '#' + guild.memberCount + '#' + guild.region + '#' + guild.joinedAt).split('#');
+        let guildDataItems = (guild.id + '¿' + guild.name + '¿' + client.users.get(guild.ownerID).username + '¿' + guild.ownerID + '¿' + guild.memberCount + '¿' + guild.region + '¿' + guild.joinedAt  + '¿' + guild.channels.array().length).split('¿');
         DB.DBAddGuild(guildDataItems);
         other.setGame(client);
     })
@@ -85,6 +85,19 @@ client.on('ready', () => {
         if (newMember.user.id != newMember.guild.ownerID) return;
         if (newMember.user.username == oldMember.user.username) return;
         DB.DBUpdateGuild(newMember.guild,client);
+    })
+    .on("channelCreate", channel => {
+        if(!channel.guild) return;
+        let guildDataItems = (channel.guild.id + '¿' + channel.guild.name + '¿' + channel.guild.owner.username + '¿' + channel.guild.ownerID + '¿' + channel.guild.memberCount + '¿' + channel.guild.region + '¿' + channel.guild.joinedAt  + '¿' + channel.guild.channels.array().length).split('¿');
+        DB.DBUpdateGuildGuild(guildDataItems);
+    })
+    .on("channelDelete", channel =>{
+        let guildDataItems = (channel.guild.id + '¿' + channel.guild.name + '¿' + channel.guild.owner.username + '¿' + channel.guild.ownerID + '¿' + channel.guild.memberCount + '¿' + channel.guild.region + '¿' + channel.guild.joinedAt  + '¿' + channel.guild.channels.array().length).split('¿');
+        DB.DBUpdateGuildGuild(guildDataItems);
+    })
+    .on("message", message =>{
+        if(!message.guild)  return;
+        DB.DBChangeData(message.guild.id,{"guildMessages":1});
     });
 
 //Login

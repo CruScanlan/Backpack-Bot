@@ -21,11 +21,11 @@ module.exports = class SetChannelCommand extends Command {
     }
 
     async run(msg,args) {
-        if(msg.author.id != msg.guild.ownerID)  return msg.channel.sendMessage(`Only The Server Owner Can Use This Command`);
+        if(msg.author.id != msg.guild.ownerID)  return msg.channel.sendMessage(`Only the server owner can use this command`);
         let channel = args.split(' ').slice(0,1).join('');
         if(channel == 'none') {
             DB.DBSetSetting(msg.guild.id,{"SettingChannel":"none"},function () {
-                return msg.channel.sendMessage(`Commands Can Now Be Used In Any Channel`)
+                return msg.channel.sendMessage(`Commands can now be used in any channel`)
                     .then( promise =>{
                         promise.delete(5000);
                     });
@@ -33,7 +33,7 @@ module.exports = class SetChannelCommand extends Command {
         }
         else {
             DB.DBSetSetting(msg.guild.id,{"SettingChannel":msg.channel.id},function () {
-                return msg.channel.sendMessage(`Commands Are Now Limited To ${msg.channel}`)
+                return msg.channel.sendMessage(`Commands are now limited to ${msg.channel}`)
                     .then( promise =>{
                         promise.delete(5000);
                     });

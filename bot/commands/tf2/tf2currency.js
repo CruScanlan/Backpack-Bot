@@ -23,7 +23,7 @@ module.exports = class TFCurrencyCommand extends Command {
 
     async run(msg) {
         DB.DBGetSetting(msg.guild.id,"SettingChannel",function(response){
-            if(response != 'none' && response != msg.channel.id)  return msg.channel.sendMessage(`This Command Can Only Be Used In ${msg.client.channels.get(response)}`)
+            if(response != 'none' && response != msg.channel.id)  return msg.channel.sendMessage(`This command can only be used in ${msg.client.channels.get(response)}`)
                 .then(message => { message.delete(5000) });
             request('http://localhost:3000/api/tf2/currencyCheck',
                 function (error, response, body) {
@@ -52,8 +52,10 @@ module.exports = class TFCurrencyCommand extends Command {
                         embed.addField(`Keys`,`${priceChange[2]} ${currencyData.keys.price.value} ${currencyData.keys.price.currency}`,true);
                         embed.addField(`Ear Buds`,`${priceChange[3]} ${currencyData.earbuds.price.value} ${currencyData.earbuds.price.currency}`,true);
                         embed.setFooter('Data from backpack.tf');
+
                         DB.DBChangeData(msg.guild.id,{"DataCQuery":1});
-                        return msg.channel.sendEmbed(embed);
+
+                        return msg.channel.sendEmbed(embed)
                     } else {
                         return msg.reply(`Data could not be retrieved at this time, sorry for the inconvenience`);
                     }

@@ -99,6 +99,15 @@ module.exports = class TFProfileCommand extends Command {
                                     }
                                     callback(`ERROR: Could Not Connect To Backpack.tf API`,null);
                                 })
+                            },
+                            function(callback) {
+                                request(`https://scrap.tf/api/bans.php?steamid=${ID64}`, function (error, response, body) {
+                                    if (!error && response.statusCode == 200) {
+                                        callback(null,JSON.parse(body));
+                                        return;
+                                    }
+                                    callback(`ERROR: Could Not Connect To Scrap.tf API`,null);
+                                })
                             }
                         ], function(err, results) {
                             if(err) {
@@ -126,6 +135,12 @@ module.exports = class TFProfileCommand extends Command {
                             }   else    { //has both bans
                                 embed.addField(`❯ Backpack.tf`,`${backpackStart}\n• Backpack.tf Bans: ${Object.keys(results[2].response.players[ID64].backpack_tf_bans).join(', ')}\n• Backpack.tf Site Wide Ban Status: ${results[2].response.players[ID64].backpack_tf_banned.reason}`,false);
                             }
+                            if(results[4].userid == undefined) {
+                                embed.addField('❯ Scrap.tf',`• Profile URL: No Scrap.tf profile\n• Banned: ${results[4].isbanned}\n• Ban message: ${results[4].message.split('\n').join(' ')}`);
+                            }   else    {
+                                embed.addField('❯ Scrap.tf',`• Profile URL: https://scrap.tf/profile/${results[4].userid}\n• Banned: ${results[4].isbanned}\n• Ban message: ${results[4].message.split('\n').join(' ')}`);
+                            }
+
                             DB.DBChangeData(msg.guild.id,{"DataPQuery":1});
                             return msg.channel.sendEmbed(embed);
                         });

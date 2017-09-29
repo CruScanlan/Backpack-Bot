@@ -1,7 +1,6 @@
 const mysql = require('mysql');
 const config = require('../../../config.json');
 const logging = require('../../../functions/logging');
-
 let mysqlConnection = mysql.createConnection(config.mysql);
 
 let DBConnect = function()  {
@@ -19,17 +18,19 @@ let DBUpdateGuilds = function(client) {
     for(let i=0;i<guildData.length; i++)    {
         r = guildData[i];
         if(r.owner) {
-            guildData[i] = r.id + '#' + r.name + '#' + r.owner.user.username + '#' + r.ownerID + '#' + r.memberCount + '#' + r.region + '#' + r.joinedAt;
+            guildData[i] = r.id + '¿' + r.name + '¿' + r.owner.user.username + '¿' + r.ownerID + '¿' + r.memberCount + '¿' + r.region + '¿' + r.joinedAt + '¿' + r.channels.array().length;
         }   else    {
             client.fetchUser(r.ownerID).then(owner => {
-                guildData[i] = r.id + '#' + r.name + '#' + owner.username + '#' + r.ownerID + '#' + r.memberCount + '#' + r.region + '#' + r.joinedAt;
+                guildData[i] = r.id + '¿' + r.name + '¿' + owner.username + '¿' + r.ownerID + '¿' + r.memberCount + '¿' + r.region + '¿' + r.joinedAt + '¿' + r.channels.array().length;
             });
         }
     }
 
     setTimeout(function () {
         for (let i = 0; i < guildData.length; i++) {
-            let guildDataItems = guildData[i].split('#');
+            let guildDataItems = guildData[i];
+            if(typeof guildDataItems  != "string") continue;
+            guildDataItems = guildDataItems.split('¿');
             let sql = "SELECT * FROM ??.`Guilds` WHERE ??.`Guilds`.`guildID` = ?;";
             let inserts = [config.mysql.database,config.mysql.database,guildDataItems[0]];
             sql = mysql.format(sql, inserts);
@@ -56,7 +57,9 @@ let DBUpdateGuilds = function(client) {
             for (let i = 0; i < rows.length; i++) {
                 let p=0;
                 for (p = 0; p < guildData.length; p++) {
-                    let guildDataItems = guildData[p].split('#');
+                    let guildDataItems = guildData[p];
+                    if(typeof guildDataItems  != "string") continue;
+                    guildDataItems = guildDataItems.split('¿');
                     if(rows[i].guildID == guildDataItems[0]) break;
                 }
                 if(p < guildData.length) continue;
@@ -67,7 +70,7 @@ let DBUpdateGuilds = function(client) {
 };
 
 let DBUpdateGuild = function(guildMember,client)   {
-    let guildDataItems = (guildMember.guild.id + '#' + guildMember.guild.name + '#' + client.users.get(guildMember.guild.ownerID).username + '#' + guildMember.guild.ownerID + '#' + guildMember.guild.memberCount + '#' + guildMember.guild.region + '#' + guildMember.guild.joinedAt).split('#');
+    let guildDataItems = (guildMember.guild.id + '¿' + guildMember.guild.name + '¿' + client.users.get(guildMember.guild.ownerID).username + '¿' + guildMember.guild.ownerID + '¿' + guildMember.guild.memberCount + '¿' + guildMember.guild.region + '¿' + guildMember.guild.joinedAt  + '¿' + guildMember.guild.channels.array().length).split('¿');
     let sql = "SELECT * FROM ??.`Guilds` WHERE ??.`Guilds`.`guildID` = ?;";
     let inserts = [config.mysql.database,config.mysql.database,guildDataItems[0]];
     sql = mysql.format(sql, inserts);
@@ -79,8 +82,8 @@ let DBUpdateGuild = function(guildMember,client)   {
 };
 
 let DBAddGuild = function(guildData)    {
-    let sql = "INSERT INTO ??.`Guilds` (`guildID`, `guildName`, `guildOwnerName`, `guildOwnerID`, `guildMemberCount`, `guildRegion`, `guildJoinDate`, `SettingChannel`, `DataPCQuery`, `DataUPCQuery`, `DataCQuery`, `DataPQuery`, `DataOPCS-PCQuery`, `DataSTNQuery`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?);";
-    let inserts = [config.mysql.database,guildData[0],guildData[1],guildData[2],guildData[3],guildData[4],guildData[5],guildData[6],'none',0,0,0,0,0,0];
+    let sql = "INSERT INTO ??.`Guilds` (`guildID`, `guildName`, `guildOwnerName`, `guildOwnerID`, `guildMemberCount`, `guildRegion`, `guildJoinDate`,`guildMessages`, `guildChannels`, `SettingChannel`, `DataPCQuery`, `DataUPCQuery`, `DataCQuery`, `DataPQuery`, `DataOPCS-PCQuery`, `DataSTNQuery`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    let inserts = [config.mysql.database,guildData[0],guildData[1],guildData[2],guildData[3],guildData[4],guildData[5],guildData[6],0,guildData[7],'none',0,0,0,0,0,0];
     sql = mysql.format(sql, inserts);
     mysqlConnection.query(sql,function(err) {
         if (err) throw err;
@@ -89,8 +92,8 @@ let DBAddGuild = function(guildData)    {
 };
 
 let DBUpdateGuildGuild = function (guildData) {
-    let sql = "UPDATE ??.`Guilds` SET ??.`Guilds`.`guildName` = ?, `guildOwnerName` = ?, `guildOwnerID` = ?, `guildMemberCount` = ?, `guildRegion` = ?, `guildJoinDate` = ? WHERE ??.`Guilds`.`guildID` = ?;";
-    let inserts = [config.mysql.database,config.mysql.database,guildData[1],guildData[2],guildData[3],guildData[4],guildData[5],guildData[6],config.mysql.database,guildData[0]];
+    let sql = "UPDATE ??.`Guilds` SET ??.`Guilds`.`guildName` = ?, `guildOwnerName` = ?, `guildOwnerID` = ?, `guildMemberCount` = ?, `guildRegion` = ?, `guildJoinDate` = ?, `guildChannels` = ? WHERE ??.`Guilds`.`guildID` = ?;";
+    let inserts = [config.mysql.database,config.mysql.database,guildData[1],guildData[2],guildData[3],guildData[4],guildData[5],guildData[6],guildData[7],config.mysql.database,guildData[0]];
     sql = mysql.format(sql, inserts);
     mysqlConnection.query(sql,function(err) {
         if (err) throw err;

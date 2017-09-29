@@ -28,7 +28,7 @@ module.exports = class stnCommand extends Command {
 
             if(!args) return msg.reply(`Please Supply An Item To Price Check`);
 
-            request('https://stntrading.eu/api/search?query='+args, function (error, response, body) {
+            request('https://stntrading.eu/backend/search?query='+args, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     let root = HTMLParser.parse(body);
 
