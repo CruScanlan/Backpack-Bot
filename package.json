@@ -10,7 +10,7 @@
     "cloudinary": "^1.5.0",
     "didyoumean": "^1.2.1",
     "discord.js": "^11.0.0",
-    "discord.js-commando": "git+https://github.com/Cruzercru/discord.js-commando",
+    "discord.js-commando": "^0.9.0",
     "express": "^4.14.0",
     "fast-html-parser": "^1.0.1",
     "jimp": "^0.2.27",
