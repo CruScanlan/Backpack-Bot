@@ -4,7 +4,7 @@
   "main": "app.js",
   "author": "Cruzercru",
   "dependencies": {
-    "async": "^2.1.4",
+    "async": "^3.2.2",
     "binarysearch": "^1.0.0",
     "body-parser": "^1.15.2",
     "cloudinary": "^1.5.0",
