@@ -13,7 +13,7 @@
     "discord.js-commando": "git+https://github.com/Cruzercru/discord.js-commando",
     "express": "^4.14.0",
     "fast-html-parser": "^1.0.1",
-    "jimp": "^0.2.27",
+    "jimp": "^0.3.7",
     "moment-timezone": "^0.5.10",
     "multer": "^1.2.1",
     "mysql": "^2.12.0",
